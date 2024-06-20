@@ -12,7 +12,7 @@ public class StartControl : MonoBehaviour
     void Start()
     {
         txt_title.text = "QuizGame";
-        txt_BTN_1.text = "Miscellaneous Questions";
+        txt_BTN_1.text = "General  Questions";
         txt_BTN_2.text = "Historical Questions ";
         txt_BTN_3.text = "Geographical Questions";
     }
@@ -20,7 +20,7 @@ public class StartControl : MonoBehaviour
     public void BTN1()
     {
         Questions_txtFile = "txtfile_1.txt";
-        Section = "Miscellaneous Questions";
+        Section = "General  Questions";
         GOTO_Game();
     }
     public void BTN2()

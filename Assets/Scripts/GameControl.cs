@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
+using TMPro;
 public class GameControl : MonoBehaviour
 {
     public Text 
@@ -23,12 +24,35 @@ public class GameControl : MonoBehaviour
     int score = 0;
     int AnswerNum = 0;
     public GameObject panel_btn;
+
+    [SerializeField]
+    TMP_InputField countInput;
+    [SerializeField]
+    Button confirmCountbtn;
+    string path;
     void Start()
     {
         score = 0;
         txt_section.text = StartControl.Section;
         Image_TrueFalse.gameObject.SetActive(false);
-        Question_list = System.IO.File.ReadAllLines("Assets/txt/" + StartControl.Questions_txtFile);
+        //Question_list = System.IO.File.ReadAllLines("Assets/txt/" + StartControl.Questions_txtFile);
+        confirmCountbtn.onClick.AddListener(SetQuestions);
+    }
+    string[] ReadQuestionsLines(int count, string path)
+    {
+        StreamReader reader = new StreamReader(path);
+        string[] questions = new string[count];
+        for (int i = 0; i < count; i++)
+        {
+            questions[i] = reader.ReadLine();
+        }
+        return questions;
+    }
+    public void SetQuestions()
+    {
+        path = Path.Combine("Assets/txt/", StartControl.Questions_txtFile);
+        int count = int.Parse(countInput.text);
+        Question_list = ReadQuestionsLines(count, path);
         showList();
     }
     private void showList()
@@ -75,6 +99,7 @@ public class GameControl : MonoBehaviour
             showImageTRueFalse("false");
             btn_an_1.GetComponent<Image>().color = Color.red;
         }
+        ChangeScoreTxt();
     }
     public void btnAnswer_2()
     {
@@ -87,8 +112,9 @@ public class GameControl : MonoBehaviour
         else
         {
             showImageTRueFalse("false");
-            btn_an_1.GetComponent<Image>().color = Color.red;
+            btn_an_2.GetComponent<Image>().color = Color.red;
         }
+        ChangeScoreTxt();
     }
     public void btnAnswer_3()
     {
@@ -96,13 +122,14 @@ public class GameControl : MonoBehaviour
         {
             score++;
             showImageTRueFalse("true");
-            btn_an_1.GetComponent<Image>().color = Color.green;
+            btn_an_3.GetComponent<Image>().color = Color.green;
         }
         else
         {
             showImageTRueFalse("false");
-            btn_an_1.GetComponent<Image>().color = Color.red;
+            btn_an_3.GetComponent<Image>().color = Color.red;
         }
+        ChangeScoreTxt();
     }
     private void showImageTRueFalse(string img)
     {
@@ -111,14 +138,11 @@ public class GameControl : MonoBehaviour
         btn_an_3.interactable = false;
         Image_TrueFalse.gameObject.SetActive(true);
         Image_TrueFalse.GetComponent<Image>().sprite = Resources.Load<Sprite>(img);
-        Invoke("showList", 2.5f);
-
+        Invoke("showList", 1.5f);
     }
-
-    void Update()
+    void ChangeScoreTxt()
     {
         txt_score.text = ("Correct answers " + score + " From " + Question_list.Length);
-        
     }
     public void BTN_Back()
     {
